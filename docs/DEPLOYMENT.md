@@ -4,7 +4,7 @@
 
 Publish this folder as the root of your personal GitHub repository. Choose the Hobby plan, without enabling a paid trial for the exercise. Use synthetic data. Vercel hosts the Django application; PostgreSQL is a separate service. Review both providers' current free limits.
 
-Create an isolated hosted PostgreSQL database (for example Neon Free) and obtain its TLS connection URL. Prefer the provider's documented pooled application connection for serverless use; some operations may require its direct connection. Do not reuse a production database or share a database across students. No file upload storage is included.
+Create an isolated hosted PostgreSQL database (for example Neon) and use its TLS pooled connection URL for Vercel application requests. This project disables PostgreSQL server-side cursors for pooled connections. Some administrative operations, such as migrations, may be better run with the provider's direct/unpooled connection. Do not reuse a production database or share a database across students. No file upload storage is included.
 
 ## 1. Configure a private deployment environment
 
@@ -25,6 +25,8 @@ Generate the secret with `python -c "import secrets; print(secrets.token_urlsafe
 Production settings require these variables, refuse SQLite/wildcard hosts, use secure cookies and TLS database access. They trust X-Forwarded-Proto only behind the deployment platform's trusted proxy. Do not use this proxy trust configuration on an arbitrary directly exposed server.
 
 If you do not know the final project hostname until the first deployment, create/import the project, obtain its assigned name, then set the exact host/origin and redeploy. An initial configuration error is preferable to allowing every hostname. Add any specific preview hostname deliberately; do not automatically trust every *.vercel.app site.
+
+The Neon Vercel Marketplace integration can inject `DATABASE_URL` into the connected project. Connect only the intended Neon database and select Production; keep preview databases isolated from production. If adding the connection string manually, use the pooled TLS URL for the app and keep it only in Vercel Environment Variables, never in source control or chat. Rotate a database password immediately if its URL was shared.
 
 ## 2. Apply the schema deliberately
 

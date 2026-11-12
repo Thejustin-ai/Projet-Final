@@ -33,6 +33,9 @@ if not url.startswith(("postgres://", "postgresql://")):
     raise ImproperlyConfigured("Production requires PostgreSQL, not a local database file.")
 DATABASES = {"default": dj_database_url.parse(url, conn_max_age=0, ssl_require=True)}
 DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
+# Neon pooled URLs use transaction pooling; server-side cursors require a stable
+# database connection and are therefore disabled for this serverless deployment.
+DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
